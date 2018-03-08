@@ -96,7 +96,7 @@
 
 
 
-<form method="post" action=""  onsubmit="routereach(event)" name="Form" >
+<form method="post" action=""  onsubmit="routereach(event)" name="Form" > {% csrf_token %}
 <style>
 
 .header {
@@ -217,7 +217,6 @@ function ValidateLatLong(event){
 
          <tr><td>Latitude :<input name="given_lat" type="text" required pattern=[0-9.]{1,} ></td><td><td><td>
          <td>Longitude:<input name="given_long" type="text" required pattern=[0-9.]{1,}></td></tr></table></center></br>
-
 
 
  	<center><button  style ="font-size:12pt; height:40px; width:70px; color:white; padding:2px; background-color:LightSkyBlue;"/>submit</button></center>
