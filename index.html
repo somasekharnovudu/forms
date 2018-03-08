@@ -3,6 +3,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
     <title>Forms</title>
     <style>
         .header {
@@ -95,7 +96,7 @@
 
 
 
-<form method="post" action="" name="Form" >
+<form method="post" action=""  onsubmit="routereach(event)" name="Form" >
 <style>
 
 .header {
@@ -114,9 +115,23 @@
 
 <body bgcolor="#f0f0f0">
 <script>
-
+function routereach(event){
+    debugger;
+    var optvalue=document.getElementById('point').value;
+    let res=true;
+    if(optvalue=='point'){
+        res=ValidateLatLong();
+    }else{
+        res=Validateconers();
+    }
+    if(res===false){
+        event.preventDefault();
+    }
+    
+}
 
 function Validateconers(){
+    debugger;
 
     var latul = document.Form.given_lat_ul;
     var longul = document.Form.given_long_ul;
@@ -130,34 +145,38 @@ function Validateconers(){
     var latll = document.Form.given_lat_ll;
     var longll = document.Form.given_long_ll;
 
-if ((latul.value < -90 || latul.value > 90) &&
-    (latur.value < -90 || latur.value > 90) &&
-    (latlr.value < -90 || latlr.value > 90) &&
+if ((latul.value < -90 || latul.value > 90) ||
+    (latur.value < -90 || latur.value > 90) ||
+    (latlr.value < -90 || latlr.value > 90) ||
     (latll.value < -90 || latll.value > 90)
    ){
         window.alert("Longitude must be between -90 and 90 degrees inclusive.");
         return false;
     }
-else if ((longul.value < -180 || longul.value > 180) &&
-            (longur.value < -180 || longur.value > 180) &&
-            (longlr.value < -180 || longlr.value > 180) &&
+else if ((longul.value < -180 || longul.value > 180) ||
+            (longur.value < -180 || longur.value > 180) ||
+            (longlr.value < -180 || longlr.value > 180) ||
             (longll.value < -180 || longll.value > 180)
         ){
         window.alert("Longitude must be between -180 and 180 degrees inclusive.");
         return false;
     }
+    return true;
 }
 
-function ValidateLatLong(){
+function ValidateLatLong(event){
+    debugger;
     var lat = document.Form.given_lat;
     var long = document.Form.given_long;
 
     if (lat.value < -90 || lat.value > 90 ){
         window.alert("Latitude must be between -90 and 90 degrees inclusive.");
         return false;
+       
     }else if (long.value < -180 || long.value > 180) {
         window.alert("Longitude must be between -180 and 180 degrees inclusive.");
         return false;
+       
     }
 }
 </script>
@@ -171,7 +190,7 @@ function ValidateLatLong(){
 
 
 {% load static%}<img src="{% static '/images/both.gif'%}" align="right"  width="350" height="180">
-<form action="" method="post"> {% csrf_token %}
+<form onsubmit="routereach(event)" method="post"> {% csrf_token %}
  <!-- 	Satellite: <select name="satellite">
       <option value="Landsat 8">Landsat 8</option>
       <option value="Sentinel 2A">Sentinel 2A</option>
@@ -204,7 +223,7 @@ function ValidateLatLong(){
 
 
 
- 	<center><button onclick="ValidateLatLong()" style ="font-size:12pt; height:40px; width:70px; color:white; padding:2px; background-color:LightSkyBlue;"/>submit</button></center>
+ 	<center><button  style ="font-size:12pt; height:40px; width:70px; color:white; padding:2px; background-color:LightSkyBlue;"/>submit</button></center>
      </fieldset></br>
 
 
@@ -236,7 +255,7 @@ function ValidateLatLong(){
 	     <td> <td><td>Lower-right corner longitude:<input name="given_long_lr" type="text" ></td></tr></table></center></br>
 
 
-<center><button onclick="Validateconers()" style ="font-size:12pt; height:40px; width:70px; color:white; padding:2px; background-color:LightSkyBlue;"/> submit</button></center>
+<center><button  style ="font-size:12pt; height:40px; width:70px; color:white; padding:2px; background-color:LightSkyBlue;"/> submit</button></center>
 
 
 
@@ -286,7 +305,13 @@ function ValidateLatLong(){
   <p>For any queries  Please Contact:<a href=" sandeep.k.chittimalli@nasa.gov">  sandeep.k.chittimalli@nasa.gov</a>
   </p>
 </div>
-
+<script>
+    // $(document).ready(function(){
+    //     $('form').submit(function(e){
+    //         e.preventDefault(e);
+    //     })
+    // })
+</script>
 
 </body>
 </html>
