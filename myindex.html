@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Forms</title>
+    <style>
+        .header {
+            left: 0;
+            top: 0;
+            width: 100%;
+            background-color: Gainsboro ;
+            color: black;
+            text-align: center;
+            }
+        .footer {
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            background-color: black;
+            color: white;
+            text-align: center;
+        }
+        .valid_coner:hover{
+            cursor: pointer;
+        }
+        .valid_coner{
+            font-size:12pt;
+            height:40px;
+            width:70px;
+            color:white;
+            padding:2px;
+            background-color:LightSkyBlue;
+        }
+        fieldset {
+            text-align:center;
+            margin:20px 0px;
+            min-height:250px;
+        }
+        table.form_table{
+            width:100%;
+            text-align: right;
+            padding:0px 100px 0px 0px
+        }
+        table.form_table td{
+            padding:10px 0px;
+        }
+        table.form_table tr{
+            width: 100%
+        }
+        label{
+            font-weight: bold
+        }
+        .table_results{
+            text-align: center;
+            width:100%;
+            border:2px solid #333333;
+            border-collapse: collapse;
+        }
+        .table_results th{
+            padding:10px 5px
+        }
+        @media screen and (max-width:1023px){
+            table.form_table{
+                padding:0px 0px;
+            }
+            .form-group input {
+                width: 30%;
+            }
+        }
+        @media screen and (max-width:679px){
+            .form-group input{
+                width:initial;
+                margin:10px 0px
+            }
+            table.form_table td{
+                display: block;
+            }
+
+        }
+        @media screen and (max-width:476px){
+            .form-group{
+                display: block;
+                text-align: center
+            }
+            .form-group label{
+                float:left
+            }
+        }
+    </style>
+
+</head>
+<body onload="bodyloader()">
+    <header class="header">
+            <h1> Landsat/Sentinel-2 Overpass prediction</h1>
+    </header>
+    <div class="formpart">
+            <div class="form-group">
+                <label for="days">Days :</label>
+                <select name="no_of_days_predictions" id="days" form="Form1 Form">
+                </select>
+                <span class="warn">
+                    Required no. of days for prediction.[Note:<q>Accurate results for atleast 90 days</q>]
+                </span>
+            </div>
+            </br>
+            <div class="form-group">
+                <label for="point">Point/Rectangle:</label>
+                <select id ="point" name="point" form="Form Form1" onchange="optionchanger(event)">
+                    <option value="point">Point</option>
+                    <option value="rectangle">Rectangle</option>
+                </select>
+            </div>
+            <form name="Form" id="Form" method="post" action=""  onsubmit="routereach(event)"> {% csrf_token %}
+                <fieldset class="pointer">
+                    <legend align="center">If it is a Point enter Lat/long here:</legend></br>
+                    <table  class="form_table">
+                        <tr>
+                            <td>
+                                <div class="form-group">
+                                    <label for="given_lat">Latitude :</label>
+                                    <input name="given_lat" id="given_lat" type="text" required pattern=[0-9.]{1,} >
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-group">
+                                    <label for="given_long">Longitude:</label>
+                                    <input name="given_long" id="given_long" type="text" required pattern=[0-9.]{1,} >
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                    <button class="valid_coner"/>submit</button>
+                </fieldset>
+            </form>
+            <form name="Form1" method="post" action=""  onsubmit="routereach(event)" hidden> {% csrf_token %}
+                <fieldset class="rectangle">
+                    <legend align="center">If it is a Rectangle enter 4 corner lat/longs here:</legend>
+                        <table class="form_table">
+                            <tr>
+                                <td>
+                                    <div class="form-group">
+                                        <label for="given_lat_ul">Upper-left corner latitude : </label>
+                                        <input name="given_lat_ul" id="given_lat_ul" required type="text" pattern=[0-9.]{1,}>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="form-group">
+                                        <label for="given_lat_ur">Upper-right corner latitude : </label>
+                                        <input name="given_lat_ur" id="given_lat_ur" required type="text" pattern=[0-9.]{1,}>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="form-group">
+                                        <label for="given_long_ul">Upper-left corner longitude :</label>
+                                        <input name="given_long_ul" id="given_long_ul" required type="text" pattern=[0-9.]{1,}>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="form-group">
+                                        <label for="given_long_ur">Upper-right corner longitude : </label>
+                                        <input name="given_long_ur" id="given_long_ur" required type="text" pattern=[0-9.]{1,}>
+                                    </div>
+                                </td>
+                            <tr>
+                                <td>
+                                    <div class="form-group">
+                                        <label for="given_lat_ll"> Lower-left corner latitude  :</label>
+                                        <input name="given_lat_ll" id="given_lat_ll" required type="text" pattern=[0-9.]{1,}>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="form-group">
+                                        <label for="given_lat_lr">Lower-right corner latitude :</label>
+                                        <input name="given_lat_lr" id="given_lat_lr" required type="text" pattern=[0-9.]{1,}>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="form-group">
+                                        <label for="given_long_ll">Lower-left corner longitude :</label>
+                                        <input name="given_long_ll" id="given_long_ll" required type="text" pattern=[0-9.]{1,}>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="form-group">
+                                        <label for="given_long_lr">Lower-right corner longitude:</label>
+                                        <input name="given_long_lr" id="given_long_lr" required type="text" pattern=[0-9.]{1,}>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                        <button class="valid_coner"> submit</button>
+                </fieldset>
+            </form>
+    </div>
+    <div class="resultspart">
+        <h2>Results:</h2>
+        <table border="1" class="table_results">
+            <tr>
+                <th>Satellite</th>
+                <th>Date(mm/dd/yyyy)</th>
+                <th>Estimated Time (UTC)</th>
+            </tr>
+            <tr>
+                <td>
+                    <span>Satellite1</span>
+                </td>
+                <td>
+                    <span>Date1</span>
+                </td>
+                <td>
+                    <span>Time1</span>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <footer class="footer">
+        <p><b> Note: This is only provisional</b></p>
+        <p>
+            For any queries  Please Contact:
+                <a href="mailto:sandeep.k.chittimalli@nasa.gov">
+                sandeep.k.chittimalli@nasa.gov</a>
+        </p>
+    </footer>
+    <script>
+        function routereach(event){
+            
+            var optvalue=document.getElementById('point').value;
+            let res=true;
+            if(optvalue=='point'){
+                res=ValidateLatLong();
+            }else{
+                res=Validateconers();
+            }
+            if(res===false){
+                event.preventDefault();
+            }
+        }
+        function bodyloader(){
+            optionLoader();
+            optionchanger();
+        }
+        function optionLoader(){
+            var selector=document.getElementById("days");
+            for(var i=5;i<366;i=i+5){
+                let option=document.createElement('option')
+                option.value=i;
+                optionText=document.createTextNode(i);
+                option.appendChild(optionText);
+                selector.appendChild(option);
+            }
+            option=document.createElement('option')
+            option.value=366;
+            optionText=document.createTextNode(366);
+            option.appendChild(optionText);
+            selector.appendChild(option);
+        }
+        function optionchanger(event){
+            var value=document.getElementById('point').value;
+            //var value=event.target.value;
+            switch(value){
+                case 'point':{
+                    document.Form.hidden=false;
+                    document.Form1.hidden=true;
+                };
+                break;
+                case 'rectangle':{
+                    document.Form.hidden=true;
+                    document.Form1.hidden=false;
+                };
+                break;
+                default:null;
+            }
+
+        }
+        function Validateconers(){
+           
+
+            var latul = document.Form1.given_lat_ul;
+            var longul = document.Form1.given_long_ul;
+
+            var latur = document.Form1.given_lat_ur;
+            var longur = document.Form1.given_long_ur;
+
+            var latlr = document.Form1.given_lat_lr;
+            var longlr = document.Form1.given_long_lr;
+
+            var latll = document.Form1.given_lat_ll;
+            var longll = document.Form1.given_long_ll;
+
+        if ((latul.value < -90 || latul.value > 90) ||
+            (latur.value < -90 || latur.value > 90) ||
+            (latlr.value < -90 || latlr.value > 90) ||
+            (latll.value < -90 || latll.value > 90)
+           ){
+                window.alert("Longitude must be between -90 and 90 degrees inclusive.");
+                return false;
+            }
+        else if ((longul.value < -180 || longul.value > 180) ||
+                    (longur.value < -180 || longur.value > 180) ||
+                    (longlr.value < -180 || longlr.value > 180) ||
+                    (longll.value < -180 || longll.value > 180)
+                ){
+                window.alert("Longitude must be between -180 and 180 degrees inclusive.");
+                return false;
+            }
+        }
+        function ValidateLatLong(){
+            
+
+            var lat = document.Form.given_lat;
+            var long = document.Form.given_long;
+
+            if (lat.value < -90 || lat.value > 90 ){
+                window.alert("Latitude must be between -90 and 90 degrees inclusive.");
+                return false;
+            }else if (long.value < -180 || long.value > 180) {
+                window.alert("Longitude must be between -180 and 180 degrees inclusive.");
+                return false;
+            }
+        }
+    </script>
+</body>
+</html>
